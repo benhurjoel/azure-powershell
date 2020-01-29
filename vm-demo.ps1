@@ -40,7 +40,7 @@ $vmConfig = New-AzVMConfig `
   -VMSize "Standard_D1" | `
 Set-AzVMOperatingSystem `
   -Linux `
-  -ComputerName "myVM" `
+  -ComputerName "demo-vm" `
   -Credential $cred `
   -DisablePasswordAuthentication | `
 Set-AzVMSourceImage `
