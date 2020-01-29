@@ -1,29 +1,29 @@
 ssh-keygen -t rsa -b 2048
-New-AzResourceGroup -Name "test-rg-01" -Location "SouthEastAsia"
+New-AzResourceGroup -Name "demo-rg-01" -Location "SouthEastAsia"
 # Create a subnet configuration
-$subnetConfig = New-AzVirtualNetworkSubnetConfig  -Name "mySubnet"  -AddressPrefix 10.1.1.0/24
+$subnetConfig = New-AzVirtualNetworkSubnetConfig  -Name "demo-subnet-01"  -AddressPrefix 10.1.1.0/24
 
 # Create a virtual network
 $vnet = New-AzVirtualNetwork `
-  -ResourceGroupName "test-rg-01" `
+  -ResourceGroupName "demo-rg-01" `
   -Location "SouthEastAsia"`
-  -Name "test-subnet-01" `
+  -Name "demo-vnet-01" `
   -AddressPrefix 10.1.0.0/16 `
   -Subnet $subnetConfig
 
 # Create a public IP address and specify a DNS name
 $pip = New-AzPublicIpAddress `
-  -ResourceGroupName "test-rg-01"  `
+  -ResourceGroupName "demo-rg-01"  `
   -Location "SouthEastAsia" `
   -AllocationMethod Static `
   -IdleTimeoutInMinutes 4 `
-  -Name "test-pip-01"
+  -Name "demo-pip-01"
 
 
   # Create a virtual network card and associate with public IP address and NSG
 $nic = New-AzNetworkInterface `
--Name "test-nic-01" `
--ResourceGroupName "test-rg-01" `
+-Name "demo-nic-01" `
+-ResourceGroupName "demo-rg-01" `
 -Location "SouthEastAsia" `
 -SubnetId $vnet.Subnets[0].Id `
 -PublicIpAddressId $pip.Id `
@@ -36,7 +36,7 @@ $cred = New-Object System.Management.Automation.PSCredential ("ben", $securePass
 
 # Create a virtual machine configuration
 $vmConfig = New-AzVMConfig `
-  -VMName "test-vm-01" `
+  -VMName "demo-vm-01" `
   -VMSize "Standard_D1" | `
 Set-AzVMOperatingSystem `
   -Linux `
@@ -59,9 +59,9 @@ Add-AzVMSshPublicKey `
   -Path "/home/ben/.ssh/authorized_keys"
 
   New-AzVM `
-  -ResourceGroupName "test-rg-01" `
+  -ResourceGroupName "demo-rg-01" `
   -Location southeastasia -VM $vmConfig
 
-  Get-AzPublicIpAddress -ResourceGroupName "test-rg-01" | Select-Object "IpAddress" > ipaddr.txt
+  Get-AzPublicIpAddress -ResourceGroupName "demo-rg-01" | Select-Object "IpAddress" > ipaddr.txt
 
   
